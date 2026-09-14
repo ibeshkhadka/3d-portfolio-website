@@ -61,14 +61,14 @@ const SoftwareProjects: React.FC<SoftwareProjectsProps> = (props) => {
                 <h3>Links:</h3>
                 <ul>
                     <li>
-                        <a rel="noreferrer" target="_blank" href="/">
+                        <a rel="noreferrer" target="_blank" href="../">
                             <p>
                                 <b>[3D Site]</b> - this site (3D room)
                             </p>
                         </a>
                     </li>
                     <li>
-                        <a rel="noreferrer" target="_blank" href="/os">
+                        <a rel="noreferrer" target="_blank" href="./">
                             <p>
                                 <b>[OS Site]</b> - the 2D desktop OS
                             </p>

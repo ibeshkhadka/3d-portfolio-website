@@ -32,7 +32,15 @@ module.exports = {
             // HTML
             {
                 test: /\.(html)$/,
-                use: ['html-loader'],
+                use: [
+                    {
+                        loader: 'html-loader',
+                        options: {
+                            // Static media is copied unchanged from ../static.
+                            sources: false,
+                        },
+                    },
+                ],
             },
             {
                 test: /\.ts?$/,

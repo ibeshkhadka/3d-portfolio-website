@@ -48,16 +48,33 @@ const Contact: React.FC<ContactProps> = (props) => {
         }
     }, [email, name, message]);
 
+    const openMailClient = useCallback(() => {
+        const subject = `${name}${company ? ` from ${company}` : ''} submitted a contact form`;
+        const body = `Name: ${name}\nEmail: ${email}${
+            company ? `\nCompany: ${company}` : ''
+        }\n\n${message}`;
+
+        window.location.href = `mailto:ibeshkhadka35@gmail.com?subject=${encodeURIComponent(
+            subject
+        )}&body=${encodeURIComponent(body)}`;
+        setFormMessage(
+            'Your email app should open so you can send this message directly.'
+        );
+        setFormMessageColor(colors.blue);
+    }, [company, email, message, name]);
+
     async function submitForm() {
         if (!isFormValid) {
             setFormMessage('Form unable to validate, please try again.');
             setFormMessageColor('red');
             return;
         }
+        if (window.location.hostname.endsWith('github.io')) {
+            openMailClient();
+            return;
+        }
         try {
             setIsLoading(true);
-            // Same-origin API served by the unified server (server/index.js).
-            // In dev (CRA on :3000) this endpoint only exists in the prod build.
             const res = await fetch('/api/send-email', {
                 method: 'POST',
                 headers: {
@@ -79,17 +96,11 @@ const Contact: React.FC<ContactProps> = (props) => {
                 setFormMessageColor(colors.blue);
                 setIsLoading(false);
             } else {
-                setFormMessage(
-                    'There was an error sending your message. Please try again.'
-                );
-                setFormMessageColor(colors.red);
+                openMailClient();
                 setIsLoading(false);
             }
         } catch (e) {
-            setFormMessage(
-                'There was an error sending your message. Please try again.'
-            );
-            setFormMessageColor(colors.red);
+            openMailClient();
             setIsLoading(false);
         }
     }
@@ -194,7 +205,7 @@ const Contact: React.FC<ContactProps> = (props) => {
                             style={styles.button}
                             type="submit"
                             disabled={!isFormValid || isLoading}
-                            onMouseDown={submitForm}
+                            onClick={submitForm}
                         >
                             {!isLoading ? (
                                 'Send Message'

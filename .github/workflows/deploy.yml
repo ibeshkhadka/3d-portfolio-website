@@ -52,6 +52,7 @@ jobs:
           cp -r apps/outer/public/* docs/
           mkdir -p docs/os
           cp -r apps/inner/build/* docs/os/
+          touch docs/.nojekyll
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
