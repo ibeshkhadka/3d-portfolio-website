@@ -1,4 +1,4 @@
-# ibesh-portfolio
+# 3D Portfolio Website
 
 One folder, one website, two apps:
 
@@ -34,8 +34,19 @@ FOLIO_EMAIL=ibeshkhadka35@gmail.com FOLIO_PASSWORD=<gmail-app-password> npm star
 
 ## Notes
 
-- `apps/inner` uses `"homepage": "."` (relative asset paths) so the same build
-  works in dev (`npm run start`, served at `/`) and in prod under `/os`.
+- Page base path: `apps/outer` is served at the Pages subpath root and `apps/inner`
+  under `<subpath>/os`. The repo name is only hardcoded in
+  `.github/workflows/deploy.yml` (`PUBLIC_URL`) and in
+  `apps/outer/src/Application/World/MonitorScreen.ts` (prod iframe), so a future
+  rename only needs those two files updated.
+
+- `apps/inner` uses `"homepage": "."` (relative asset paths) so **one build works
+  everywhere** — locally under `/os` (`npm start`) and under the GitHub Pages
+  subpath. Keep it `.`: `PUBLIC_URL` always overrides `homepage`, so the Pages
+  workflow passes an absolute `PUBLIC_URL` (`/3d-portfolio-website/os`) at build
+  time, and nothing else needs the subpath baked in.
+  Do **not** put an absolute path in `homepage` — it silently breaks the local
+  prod build, because `npm start` serves inner at `/os`, not the Pages subpath.
   All `react-router` imports come from `react-router-dom` — do **not** add a
   separate `react-router` dependency (two copies break routing context).
 - `apps/outer` monitor (`src/Application/World/MonitorScreen.ts`): prod iframe = `/os/`, `?dev` = `http://localhost:3000/`.
