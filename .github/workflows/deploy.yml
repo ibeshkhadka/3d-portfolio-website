@@ -39,12 +39,12 @@ jobs:
       - name: Build outer (3D room)
         run: CI=false npm run build --prefix apps/outer
         env:
-          PUBLIC_URL: /ibesh-portfolio-website
+          PUBLIC_URL: /3d-portfolio-website
 
       - name: Build inner (2D OS)
         run: CI=false npm run build --prefix apps/inner
         env:
-          PUBLIC_URL: /ibesh-portfolio-website/os
+          PUBLIC_URL: /3d-portfolio-website/os
 
       - name: Prepare docs folder
         run: |
