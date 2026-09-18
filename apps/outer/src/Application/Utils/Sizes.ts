@@ -8,15 +8,15 @@ export default class Sizes extends EventEmitter {
     constructor() {
         super();
 
-        // Setup
-        this.width = window.innerWidth;
-        this.height = window.innerHeight;
+        // Setup (clamped so a 0x0 pre-layout viewport can't produce NaN aspects)
+        this.width = Math.max(1, window.innerWidth);
+        this.height = Math.max(1, window.innerHeight);
         this.pixelRatio = Math.min(window.devicePixelRatio, 2);
 
         // Resize event
         window.addEventListener('resize', () => {
-            this.width = window.innerWidth;
-            this.height = window.innerHeight;
+            this.width = Math.max(1, window.innerWidth);
+            this.height = Math.max(1, window.innerHeight);
             this.pixelRatio = Math.min(window.devicePixelRatio, 2);
 
             this.trigger('resize');

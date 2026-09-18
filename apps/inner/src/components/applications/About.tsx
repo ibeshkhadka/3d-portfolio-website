@@ -44,14 +44,14 @@ const About: React.FC<AboutProps> = (props) => {
                     <ul style={styles.list}>
                         <li>
                             <p style={styles.paragraph}>
-                                Calc does real arithmetic, including formulas
-                                like =A1+B2 and =SUM(A1:A5).
+                                Gallery shows your photos, and Files browses
+                                this machine's folders.
                             </p>
                         </li>
                         <li>
                             <p style={styles.paragraph}>
-                                Terminal is a working shell over this machine's
-                                folders. Try 'open gallery'.
+                                Settings changes the wallpaper and the title
+                                bar colour, and your choice sticks.
                             </p>
                         </li>
                         <li>

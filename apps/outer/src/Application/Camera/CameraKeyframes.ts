@@ -56,9 +56,11 @@ export class MonitorKeyframe extends CameraKeyframeInstance {
     }
 
     update() {
-        const aspect = this.sizes.height / this.sizes.width;
+        const safeW = Math.max(1, this.sizes.width);
+        const aspect = safeW > 0 ? this.sizes.height / safeW : 1;
         const additionalZoom = this.sizes.width < 768 ? 0 : 600;
-        this.targetPos.z = this.origin.z + aspect * 1200 - additionalZoom;
+        const z = this.origin.z + aspect * 1200 - additionalZoom;
+        this.targetPos.z = Number.isFinite(z) ? z : this.origin.z;
         this.position.copy(this.targetPos);
     }
 }
@@ -92,19 +94,30 @@ export class DeskKeyframe extends CameraKeyframeInstance {
     }
 
     update() {
-        this.targetFoc.x +=
-            (this.mouse.x - this.sizes.width / 2 - this.targetFoc.x) * 0.05;
-        this.targetFoc.y +=
-            (-(this.mouse.y - this.sizes.height) - this.targetFoc.y) * 0.05;
+        // Guard against undefined/NaN mouse values poisoning the targets
+        if (Number.isFinite(this.mouse.x)) {
+            this.targetFoc.x +=
+                (this.mouse.x - this.sizes.width / 2 - this.targetFoc.x) * 0.05;
+        }
+        if (Number.isFinite(this.mouse.y)) {
+            this.targetFoc.y +=
+                (-(this.mouse.y - this.sizes.height) - this.targetFoc.y) * 0.05;
+        }
 
-        this.targetPos.x +=
-            (this.mouse.x - this.sizes.width / 2 - this.targetPos.x) * 0.025;
-        this.targetPos.y +=
-            (-(this.mouse.y - this.sizes.height * 2) - this.targetPos.y) *
-            0.025;
+        if (Number.isFinite(this.mouse.x)) {
+            this.targetPos.x +=
+                (this.mouse.x - this.sizes.width / 2 - this.targetPos.x) * 0.025;
+        }
+        if (Number.isFinite(this.mouse.y)) {
+            this.targetPos.y +=
+                (-(this.mouse.y - this.sizes.height * 2) - this.targetPos.y) *
+                0.025;
+        }
 
-        const aspect = this.sizes.height / this.sizes.width;
-        this.targetPos.z = this.origin.z + aspect * 3000 - 1800;
+        const safeW = Math.max(1, this.sizes.width);
+        const aspect = safeW > 0 ? this.sizes.height / safeW : 1;
+        const z = this.origin.z + aspect * 3000 - 1800;
+        this.targetPos.z = Number.isFinite(z) ? z : this.origin.z;
 
         this.focalPoint.copy(this.targetFoc);
         this.position.copy(this.targetPos);

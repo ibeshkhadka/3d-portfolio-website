@@ -33,9 +33,9 @@ const PORTFOLIO_TXT = [
 const README_TXT = [
     'Welcome to this desktop.',
     '',
-    '  Calc      - a working spreadsheet. Type =A1+B2 or =SUM(A1:A5).',
+    '  Gallery   - your photos, with a built-in viewer.',
     '  Files     - browse the folders of this machine.',
-    '  Terminal  - a shell. Try: help, ls, cd, cat, neofetch, open gallery.',
+    '  Notepad   - notes that save as you type.',
     '  Settings  - change the wallpaper and the window title bar colour.',
     '  Trash     - notes you delete in Notepad land here. Restore them if',
     '              you change your mind.',
@@ -101,7 +101,7 @@ export function listPath(path: string[]): FsNode[] {
     return nodeAtPath(path)?.children || [];
 }
 
-/** Absolute path of a node, used by the Terminal's ls/cd. */
+/** Absolute path of a node, e.g. for breadcrumbs. */
 export function pathToString(path: string[]): string {
     return path.length === 0 ? '~' : `~/${path.join('/')}`;
 }

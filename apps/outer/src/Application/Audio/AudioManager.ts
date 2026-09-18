@@ -155,7 +155,8 @@ export default class Audio {
     setAudioFilterFrequency(audio: string, frequency: number) {
         const a = this.audioPool[audio];
 
-        if (a) {
+        // Skip non-finite values so a bad camera frame can't throw in the tick loop
+        if (a && Number.isFinite(frequency)) {
             const ac = a.context;
             const filter = a.getFilter() as BiquadFilterNode;
             // clamp the frequency between 0 and 22500
@@ -167,7 +168,7 @@ export default class Audio {
 
     setAudioVolume(audio: string, volume: number) {
         const a = this.audioPool[audio];
-        if (a) {
+        if (a && Number.isFinite(volume)) {
             a.setVolume(volume);
         }
     }

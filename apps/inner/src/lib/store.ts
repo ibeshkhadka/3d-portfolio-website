@@ -69,7 +69,6 @@ export const STORAGE_KEYS = {
     notes: 'ibesh-os-notepad-v1',
     trash: 'ibesh-os-trash-v1',
     settings: 'ibesh-os-settings-v1',
-    sheet: 'ibesh-os-calc-v1',
 };
 
 export interface OsSettings {
@@ -91,7 +90,7 @@ export interface TrashItem {
     deletedAt: number;
 }
 
-/** Ask the desktop to open one of its apps by key (used by the Terminal). */
+/** Ask the desktop to open one of its apps by key (used by About's buttons). */
 export function requestAppOpen(appKey: string): void {
     window.dispatchEvent(new CustomEvent('ibesh-os-open-app', { detail: appKey }));
 }

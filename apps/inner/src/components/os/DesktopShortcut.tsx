@@ -7,6 +7,8 @@ export interface DesktopShortcutProps {
     icon: IconName;
     shortcutName: string;
     invertText?: boolean;
+    col?: number;
+    row?: number;
     onOpen: () => void;
 }
 

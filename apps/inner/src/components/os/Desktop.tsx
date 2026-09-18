@@ -3,9 +3,7 @@ import Colors from '../../constants/colors';
 import ShowcaseExplorer from '../applications/ShowcaseExplorer';
 import Gallery from '../applications/Gallery';
 import Notepad from '../applications/Notepad';
-import Calc from '../applications/Calc';
 import Files from '../applications/Files';
-import Terminal from '../applications/Terminal';
 import Settings from '../applications/Settings';
 import Trash from '../applications/Trash';
 import About from '../applications/About';
@@ -22,8 +20,21 @@ import {
     useSharedValue,
 } from '../../lib/store';
 
-/** Desktop icons wrap into a new column after this many. */
-const SHORTCUTS_PER_COLUMN = 7;
+/**
+ * Explicit grid positions (col, row) for each desktop shortcut.
+ * Tools stack down the left column; gallery/about/credits sit in one
+ * horizontal line directly below the trash; showcase is in the second column.
+ */
+const DESKTOP_LAYOUT: { key: string; col: number; row: number }[] = [
+    { key: 'files', col: 0, row: 0 },
+    { key: 'gallery', col: 0, row: 1 },
+    { key: 'notepad', col: 0, row: 2 },
+    { key: 'settings', col: 0, row: 3 },
+    { key: 'trash', col: 0, row: 4 },
+    { key: 'about', col: 0, row: 5 },
+    { key: 'credits', col: 0, row: 6 },
+    { key: 'showcase', col: 1, row: 0 },
+];
 
 export interface DesktopProps {}
 
@@ -61,23 +72,11 @@ const APPLICATIONS: {
         shortcutIcon: 'notepadIcon',
         component: Notepad,
     },
-    calc: {
-        key: 'calc',
-        name: 'Calc',
-        shortcutIcon: 'calcIcon',
-        component: Calc,
-    },
     files: {
         key: 'files',
         name: 'Files',
         shortcutIcon: 'filesIcon',
         component: Files,
-    },
-    terminal: {
-        key: 'terminal',
-        name: 'Terminal',
-        shortcutIcon: 'terminalIcon',
-        component: Terminal,
     },
     settings: {
         key: 'settings',
@@ -126,11 +125,13 @@ const Desktop: React.FC<DesktopProps> = (props) => {
 
     useEffect(() => {
         const newShortcuts: DesktopShortcutProps[] = [];
-        Object.keys(APPLICATIONS).forEach((key) => {
+        DESKTOP_LAYOUT.forEach(({ key, col, row }) => {
             const app = APPLICATIONS[key];
             newShortcuts.push({
                 shortcutName: app.name,
                 icon: app.shortcutIcon,
+                col,
+                row,
                 onOpen: () => {
                     addWindow(
                         app.key,
@@ -296,9 +297,9 @@ const Desktop: React.FC<DesktopProps> = (props) => {
                 );
             })}
             <div style={styles.shortcuts}>
-                {shortcuts.map((shortcut, i) => {
-                    const column = Math.floor(i / SHORTCUTS_PER_COLUMN);
-                    const row = i % SHORTCUTS_PER_COLUMN;
+                {shortcuts.map((shortcut) => {
+                    const column = shortcut.col ?? 0;
+                    const row = shortcut.row ?? 0;
                     return (
                         <div
                             style={Object.assign({}, styles.shortcutContainer, {

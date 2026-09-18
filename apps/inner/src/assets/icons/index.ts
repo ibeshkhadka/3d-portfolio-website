@@ -10,9 +10,7 @@ import showcaseIcon from './showcaseIcon.png';
 import credits from './credits.png';
 import galleryIcon from './galleryIcon.png';
 import notepadIcon from './notepadIcon.png';
-import calcIcon from './calcIcon.png';
 import filesIcon from './filesIcon.png';
-import terminalIcon from './terminalIcon.png';
 import settingsIcon from './settingsIcon.png';
 import trashIcon from './trashIcon.png';
 import aboutIcon from './aboutIcon.png';
@@ -35,9 +33,7 @@ const icons = {
     credits: credits,
     galleryIcon: galleryIcon,
     notepadIcon: notepadIcon,
-    calcIcon: calcIcon,
     filesIcon: filesIcon,
-    terminalIcon: terminalIcon,
     settingsIcon: settingsIcon,
     trashIcon: trashIcon,
     aboutIcon: aboutIcon,
