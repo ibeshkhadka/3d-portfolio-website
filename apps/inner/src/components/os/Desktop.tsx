@@ -1,16 +1,29 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Colors from '../../constants/colors';
 import ShowcaseExplorer from '../applications/ShowcaseExplorer';
-import Doom from '../applications/Doom';
-import OregonTrail from '../applications/OregonTrail';
+import Gallery from '../applications/Gallery';
+import Notepad from '../applications/Notepad';
+import Calc from '../applications/Calc';
+import Files from '../applications/Files';
+import Terminal from '../applications/Terminal';
+import Settings from '../applications/Settings';
+import Trash from '../applications/Trash';
+import About from '../applications/About';
 import ShutdownSequence from './ShutdownSequence';
 // import ThisComputer from '../applications/ThisComputer';
-import Ibeshdle from '../applications/Ibeshdle';
 import Toolbar from './Toolbar';
 import DesktopShortcut, { DesktopShortcutProps } from './DesktopShortcut';
-import Scrabble from '../applications/Scrabble';
 import { IconName } from '../../assets/icons';
 import Credits from '../applications/Credits';
+import {
+    DEFAULT_SETTINGS,
+    OsSettings,
+    STORAGE_KEYS,
+    useSharedValue,
+} from '../../lib/store';
+
+/** Desktop icons wrap into a new column after this many. */
+const SHORTCUTS_PER_COLUMN = 7;
 
 export interface DesktopProps {}
 
@@ -36,29 +49,53 @@ const APPLICATIONS: {
         shortcutIcon: 'showcaseIcon',
         component: ShowcaseExplorer,
     },
-    trail: {
-        key: 'trail',
-        name: 'The Oregon Trail',
-        shortcutIcon: 'trailIcon',
-        component: OregonTrail,
+    gallery: {
+        key: 'gallery',
+        name: 'Photo Gallery',
+        shortcutIcon: 'galleryIcon',
+        component: Gallery,
     },
-    doom: {
-        key: 'doom',
-        name: 'Doom',
-        shortcutIcon: 'doomIcon',
-        component: Doom,
+    notepad: {
+        key: 'notepad',
+        name: 'Notepad',
+        shortcutIcon: 'notepadIcon',
+        component: Notepad,
     },
-    scrabble: {
-        key: 'scrabble',
-        name: 'Scrabble',
-        shortcutIcon: 'scrabbleIcon',
-        component: Scrabble,
+    calc: {
+        key: 'calc',
+        name: 'Calc',
+        shortcutIcon: 'calcIcon',
+        component: Calc,
     },
-    ibeshdle: {
-        key: 'ibeshdle',
-        name: 'Ibeshdle',
-        shortcutIcon: 'henordleIcon',
-        component: Ibeshdle,
+    files: {
+        key: 'files',
+        name: 'Files',
+        shortcutIcon: 'filesIcon',
+        component: Files,
+    },
+    terminal: {
+        key: 'terminal',
+        name: 'Terminal',
+        shortcutIcon: 'terminalIcon',
+        component: Terminal,
+    },
+    settings: {
+        key: 'settings',
+        name: 'Settings',
+        shortcutIcon: 'settingsIcon',
+        component: Settings,
+    },
+    trash: {
+        key: 'trash',
+        name: 'Trash',
+        shortcutIcon: 'trashIcon',
+        component: Trash,
+    },
+    about: {
+        key: 'about',
+        name: 'About',
+        shortcutIcon: 'aboutIcon',
+        component: About,
     },
     credits: {
         key: 'credits',
@@ -70,6 +107,10 @@ const APPLICATIONS: {
 
 const Desktop: React.FC<DesktopProps> = (props) => {
     const [windows, setWindows] = useState<DesktopWindows>({});
+    const [settings] = useSharedValue<OsSettings>(
+        STORAGE_KEYS.settings,
+        DEFAULT_SETTINGS
+    );
 
     const [shortcuts, setShortcuts] = useState<DesktopShortcutProps[]>([]);
 
@@ -201,8 +242,38 @@ const Desktop: React.FC<DesktopProps> = (props) => {
         [getHighestZIndex]
     );
 
+    /** Let other apps open one of our windows (used by the Terminal). */
+    useEffect(() => {
+        const onOpenApp = (event: Event) => {
+            const key = (event as CustomEvent).detail as string;
+            const app = APPLICATIONS[key];
+            if (!app) return;
+            addWindow(
+                app.key,
+                <app.component
+                    onInteract={() => onWindowInteract(app.key)}
+                    onMinimize={() => minimizeWindow(app.key)}
+                    onClose={() => removeWindow(app.key)}
+                    key={app.key}
+                />
+            );
+        };
+        window.addEventListener('ibesh-os-open-app', onOpenApp);
+        return () =>
+            window.removeEventListener('ibesh-os-open-app', onOpenApp);
+    }, [addWindow, onWindowInteract, minimizeWindow, removeWindow]);
+
     return !shutdown ? (
-        <div style={styles.desktop}>
+        <div
+            style={Object.assign({}, styles.desktop, {
+                backgroundColor: settings.wallpaper,
+                backgroundImage: settings.wallpaperImage
+                    ? `url(${settings.wallpaperImage})`
+                    : 'none',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+            })}
+        >
             {/* For each window in windows, loop over and render  */}
             {Object.keys(windows).map((key) => {
                 const element = windows[key].component;
@@ -226,10 +297,13 @@ const Desktop: React.FC<DesktopProps> = (props) => {
             })}
             <div style={styles.shortcuts}>
                 {shortcuts.map((shortcut, i) => {
+                    const column = Math.floor(i / SHORTCUTS_PER_COLUMN);
+                    const row = i % SHORTCUTS_PER_COLUMN;
                     return (
                         <div
                             style={Object.assign({}, styles.shortcutContainer, {
-                                top: i * 104,
+                                top: row * 104,
+                                left: column * 84,
                             })}
                             key={shortcut.shortcutName}
                         >

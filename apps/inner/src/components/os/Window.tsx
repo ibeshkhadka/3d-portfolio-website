@@ -4,6 +4,12 @@ import colors from '../../constants/colors';
 import Colors from '../../constants/colors';
 import Icon from '../general/Icon';
 import Button from './Button';
+import {
+    DEFAULT_SETTINGS,
+    OsSettings,
+    STORAGE_KEYS,
+    useSharedValue,
+} from '../../lib/store';
 import DragIndicator from './DragIndicator';
 import ResizeIndicator from './ResizeIndicator';
 
@@ -26,6 +32,10 @@ export interface WindowProps {
 
 const Window: React.FC<WindowProps> = (props) => {
     const windowRef = useRef<any>(null);
+    const [settings] = useSharedValue<OsSettings>(
+        STORAGE_KEYS.settings,
+        DEFAULT_SETTINGS
+    );
     const dragRef = useRef<any>(null);
     const contentRef = useRef<any>(null);
 
@@ -211,8 +221,10 @@ const Window: React.FC<WindowProps> = (props) => {
                             style={Object.assign(
                                 {},
                                 styles.topBar,
-                                props.windowBarColor && {
-                                    backgroundColor: props.windowBarColor,
+                                {
+                                    backgroundColor:
+                                        props.windowBarColor ||
+                                        settings.accent,
                                 },
                                 !windowActive && {
                                     backgroundColor: Colors.darkGray,

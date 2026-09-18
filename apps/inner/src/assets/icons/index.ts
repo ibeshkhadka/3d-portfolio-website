@@ -7,16 +7,19 @@ import computerBig from './computerBig.png';
 import computerSmall from './computerSmall.png';
 import myComputer from './myComputer.png';
 import showcaseIcon from './showcaseIcon.png';
-import doomIcon from './doomIcon.png';
-import henordleIcon from './henordleIcon.png';
 import credits from './credits.png';
+import galleryIcon from './galleryIcon.png';
+import notepadIcon from './notepadIcon.png';
+import calcIcon from './calcIcon.png';
+import filesIcon from './filesIcon.png';
+import terminalIcon from './terminalIcon.png';
+import settingsIcon from './settingsIcon.png';
+import trashIcon from './trashIcon.png';
+import aboutIcon from './aboutIcon.png';
 import volumeOn from './volumeOn.png';
 import volumeOff from './volumeOff.png';
-import trailIcon from './trailIcon.png';
-import windowGameIcon from './windowGameIcon.png';
 import windowExplorerIcon from './windowExplorerIcon.png';
 import windowsStartIcon from './windowsStartIcon.png';
-import scrabbleIcon from './scrabbleIcon.png';
 import close from './close.png';
 
 const icons = {
@@ -27,17 +30,20 @@ const icons = {
     computerSmall: computerSmall,
     myComputer: myComputer,
     showcaseIcon: showcaseIcon,
-    doomIcon: doomIcon,
     volumeOn: volumeOn,
     volumeOff: volumeOff,
     credits: credits,
-    scrabbleIcon: scrabbleIcon,
-    henordleIcon: henordleIcon,
+    galleryIcon: galleryIcon,
+    notepadIcon: notepadIcon,
+    calcIcon: calcIcon,
+    filesIcon: filesIcon,
+    terminalIcon: terminalIcon,
+    settingsIcon: settingsIcon,
+    trashIcon: trashIcon,
+    aboutIcon: aboutIcon,
     close: close,
-    windowGameIcon: windowGameIcon,
     windowExplorerIcon: windowExplorerIcon,
     windowsStartIcon: windowsStartIcon,
-    trailIcon: trailIcon,
 };
 
 export type IconName = keyof typeof icons;
