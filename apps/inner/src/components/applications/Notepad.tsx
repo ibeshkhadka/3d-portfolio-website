@@ -26,8 +26,27 @@ const newNote = (): Note => ({
     updatedAt: Date.now(),
 });
 
+/**
+ * A permanent note that always ships in Notepad. It has a fixed id so we can
+ * ensure it stays present (re-adding it if the user deletes it).
+ */
+const SPIDERMAN_NOTE: Note = {
+    id: 'spiderman-note',
+    title: "I'm Spider-Man.",
+    body: `Whatever life holds in store for me,
+
+I will never forget these words: 'With great power comes great responsibility.'
+
+This is my gift, my curse.
+
+Who am I?
+
+I'm Spider-Man.`,
+    updatedAt: 0,
+};
+
 /** Stable fallback, used when nothing has been saved yet. */
-const INITIAL_NOTES: Note[] = [newNote()];
+const INITIAL_NOTES: Note[] = [SPIDERMAN_NOTE, newNote()];
 
 const previewOf = (note: Note): string => {
     const flat = note.body.replace(/\s+/g, ' ').trim();
@@ -39,12 +58,26 @@ const Notepad: React.FC<NotepadProps> = (props) => {
         STORAGE_KEYS.notes,
         INITIAL_NOTES
     );
-    const [activeId, setActiveId] = useState<string>(() => notes[0].id);
+    // Default to the permanent Spider-Man note when Notepad opens.
+    const [activeId, setActiveId] = useState<string>(
+        () =>
+            notes.find((note) => note.id === SPIDERMAN_NOTE.id)?.id ||
+            notes[0].id
+    );
 
     const active = useMemo(
         () => notes.find((note) => note.id === activeId) || notes[0],
         [notes, activeId]
     );
+
+    // On open, make sure the Spider-Man note is the one being shown once it's
+    // present in the list.
+    useEffect(() => {
+        if (notes.some((note) => note.id === SPIDERMAN_NOTE.id)) {
+            setActiveId(SPIDERMAN_NOTE.id);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // Seed storage on first run so the Trash app sees the same notes.
     useEffect(() => {
@@ -53,6 +86,17 @@ const Notepad: React.FC<NotepadProps> = (props) => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    // Keep the permanent Spider-Man note pinned: re-add it to the top whenever
+    // it's missing (covers existing saved notes, or if it ever gets deleted).
+    useEffect(() => {
+        if (!notes.some((note) => note.id === SPIDERMAN_NOTE.id)) {
+            setNotes((prev) => [
+                { ...SPIDERMAN_NOTE, updatedAt: Date.now() },
+                ...prev,
+            ]);
+        }
+    }, [notes, setNotes]);
 
     const updateActive = useCallback(
         (patch: Partial<Pick<Note, 'title' | 'body'>>) => {
@@ -76,6 +120,8 @@ const Notepad: React.FC<NotepadProps> = (props) => {
     /** Deleting a note moves it to the Trash app, so it can be restored. */
     const deleteNote = useCallback(
         (id: string) => {
+            // The Spider-Man note is permanent — it can't be deleted.
+            if (id === SPIDERMAN_NOTE.id) return;
             const note = notes.find((entry) => entry.id === id);
             if (note) {
                 const trash = readValue<TrashItem[]>(

@@ -7,6 +7,7 @@ import Files from '../applications/Files';
 import Settings from '../applications/Settings';
 import Trash from '../applications/Trash';
 import About from '../applications/About';
+import MusicPlayerApp from '../applications/MusicPlayerApp';
 import ShutdownSequence from './ShutdownSequence';
 // import ThisComputer from '../applications/ThisComputer';
 import Toolbar from './Toolbar';
@@ -33,6 +34,7 @@ const DESKTOP_LAYOUT: { key: string; col: number; row: number }[] = [
     { key: 'trash', col: 0, row: 4 },
     { key: 'about', col: 0, row: 5 },
     { key: 'credits', col: 0, row: 6 },
+    { key: 'music', col: 0, row: 7 },
     { key: 'showcase', col: 1, row: 0 },
 ];
 
@@ -102,6 +104,12 @@ const APPLICATIONS: {
         shortcutIcon: 'credits',
         component: Credits,
     },
+    music: {
+        key: 'music',
+        name: 'Music Player',
+        shortcutIcon: 'cd',
+        component: MusicPlayerApp,
+    },
 };
 
 const Desktop: React.FC<DesktopProps> = (props) => {
@@ -144,12 +152,6 @@ const Desktop: React.FC<DesktopProps> = (props) => {
                     );
                 },
             });
-        });
-
-        newShortcuts.forEach((shortcut) => {
-            if (shortcut.shortcutName === 'My Showcase') {
-                shortcut.onOpen();
-            }
         });
 
         setShortcuts(newShortcuts);

@@ -19,6 +19,7 @@ import volumeOff from './volumeOff.png';
 import windowExplorerIcon from './windowExplorerIcon.png';
 import windowsStartIcon from './windowsStartIcon.png';
 import close from './close.png';
+import cd from './cd.png';
 
 const icons = {
     windowResize: windowResize,
@@ -40,6 +41,7 @@ const icons = {
     close: close,
     windowExplorerIcon: windowExplorerIcon,
     windowsStartIcon: windowsStartIcon,
+    cd: cd,
 };
 
 export type IconName = keyof typeof icons;
